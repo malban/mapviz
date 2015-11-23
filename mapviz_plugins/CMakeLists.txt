@@ -75,6 +75,7 @@ file (GLOB SRC_FILES
     src/grid_plugin.cpp
     src/path_plugin.cpp
     src/laserscan_plugin.cpp
+    src/point_click_publisher_plugin.cpp
     src/textured_marker_plugin.cpp
     src/tf_frame_plugin.cpp
     src/robot_image_plugin.cpp
@@ -83,8 +84,9 @@ file (GLOB SRC_FILES
     
 QT4_WRAP_UI(SRC_FILES ${UI_FILES})
 
-QT4_WRAP_CPP(SRC_FILES 
-    include/mapviz_plugins/multires_image_plugin.h 
+QT4_WRAP_CPP(SRC_FILES
+    include/mapviz_plugins/canvas_click_filter.h
+    include/mapviz_plugins/multires_image_plugin.h
     include/mapviz_plugins/image_plugin.h
     include/mapviz_plugins/disparity_plugin.h
     include/mapviz_plugins/odometry_plugin.h 
@@ -92,6 +94,7 @@ QT4_WRAP_CPP(SRC_FILES
     include/mapviz_plugins/grid_plugin.h
     include/mapviz_plugins/path_plugin.h
     include/mapviz_plugins/laserscan_plugin.h
+    include/mapviz_plugins/point_click_publisher_plugin.h
     include/mapviz_plugins/textured_marker_plugin.h
     include/mapviz_plugins/tf_frame_plugin.h
     include/mapviz_plugins/robot_image_plugin.h
