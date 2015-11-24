@@ -51,6 +51,7 @@
 #include <yaml_util/yaml_util.h>
 
 #include <mapviz/widgets.h>
+#include <mapviz/topic_tree_dialog.h>
 
 namespace mapviz
 {

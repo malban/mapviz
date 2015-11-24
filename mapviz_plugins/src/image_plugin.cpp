@@ -174,27 +174,12 @@ namespace mapviz_plugins
 
   void ImagePlugin::SelectTopic()
   {
-    QDialog dialog;
-    Ui::topicselect ui;
-    ui.setupUi(&dialog);
-
-    std::vector<ros::master::TopicInfo> topics;
-    ros::master::getTopics(topics);
-
-    for (unsigned int i = 0; i < topics.size(); i++)
-    {
-      if (topics[i].datatype == "sensor_msgs/Image")
-      {
-        ui.displaylist->addItem(topics[i].name.c_str());
-      }
-    }
-    ui.displaylist->setCurrentRow(0);
-
+    mapviz::TopicTreeDialog dialog(config_widget_, QString("sensor_msgs/Image"));
     dialog.exec();
 
-    if (dialog.result() == QDialog::Accepted && ui.displaylist->selectedItems().count() == 1)
+    if (dialog.result() == QDialog::Accepted && dialog.SelectedCount() == 1)
     {
-      ui_.topic->setText(ui.displaylist->selectedItems().first()->text());
+      ui_.topic->setText(dialog.CurrentTopic());
       TopicEdited();
     }
   }
