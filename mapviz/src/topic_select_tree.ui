@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>topic_select_tree</class>
- <widget class="QDialog" name="topicselecttree">
+ <widget class="QDialog" name="topic_select_tree">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -20,13 +20,25 @@
    <item>
     <widget class="QTreeWidget" name="displaylist">
      <property name="indentation">
-      <number>5</number>
+      <number>20</number>
+     </property>
+     <property name="rootIsDecorated">
+      <bool>true</bool>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>false</bool>
+     </property>
+     <property name="itemsExpandable">
+      <bool>true</bool>
      </property>
      <property name="sortingEnabled">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="animated">
       <bool>true</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
      <property name="headerHidden">
       <bool>true</bool>
@@ -61,7 +73,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>topicselecttree</receiver>
+   <receiver>topic_select_tree</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -77,7 +89,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>topicselecttree</receiver>
+   <receiver>topic_select_tree</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

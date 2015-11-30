@@ -29,6 +29,8 @@
 
 #include <mapviz/topic_tree_dialog.h>
 
+#include <algorithm>
+
 #include <ros/master.h>
 
 #include "ui_topic_select_tree.h"
@@ -48,47 +50,98 @@ namespace mapviz
     std::vector<ros::master::TopicInfo> topics;
     ros::master::getTopics(topics);
     
-    std::map<QString, QTreeWidgetItem*> tree_items;
-    
+    std::vector<std::string> topic_names;
     for (size_t i = 0; i < topics.size(); i++)
     {
-      QString topic = QString(topics[i].name.c_str());
+      std::string topic = topics[i].name;
       for (size_t j = 0; j < types_.size(); j++)
       {
         if (topics[i].datatype == types_[j].toStdString())
         {
-          QStringList topic_tokens = topic.split(QString("/"));
-          QString topic_root("");
-          for (size_t k = 0; k < topic_tokens.size(); k++)
+          topic_names.push_back(topic);
+          break;
+        }
+      }
+    }
+    std::sort(topic_names.begin(), topic_names.end());
+    
+    std::map<QString, QTreeWidgetItem*> tree_items;
+    
+    for (size_t i = 0; i < topic_names.size(); i++)
+    {
+      QString topic = QString(topic_names[i].c_str());
+      for (size_t j = 0; j < types_.size(); j++)
+      {
+        QStringList topic_tokens = topic.split(QString("/"), QString::SkipEmptyParts);
+        QString topic_root("");
+        for (size_t k = 0; k < topic_tokens.size(); k++)
+        {
+          if (topic_root == "")
           {
-            if (topic_root == "")
+            topic_root += "/";
+            topic_root += topic_tokens[k];
+            if (tree_items.count(topic_root) == 0)
             {
-              topic_root += "/";
-              topic_root += topic_tokens[k];
-              if (tree_items.count(topic_root) == 0)
+              QTreeWidgetItem *treeItem = new QTreeWidgetItem(ui_->displaylist);
+              treeItem->setText(0, topic_tokens[k]);
+                
+              if (k == topic_tokens.size() - 1)
               {
-                QTreeWidgetItem *treeItem = new QTreeWidgetItem(ui_->displaylist);
-                treeItem->setText(0, topic_tokens[k]);
+                QBrush brush (Qt::black);
+                treeItem->setForeground(0, QBrush(Qt::black));
+                treeItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
               }
+              else
+              {
+                treeItem->setForeground(0, QBrush(Qt::darkGray));
+                treeItem->setFlags(Qt::ItemIsEnabled);
+              }
+                
+              tree_items[topic_root] = treeItem;
             }
-            else
+            else if (k == topic_tokens.size() - 1)
             {
-              QTreeWidgetItem *parent = tree_items[topic_root];
+              tree_items[topic_root]->setForeground(0, QBrush(Qt::black));
+              tree_items[topic_root]->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+            }
+          }
+          else
+          {
+            QTreeWidgetItem *parent = tree_items[topic_root];
               
-              topic_root += "/";
-              topic_root += topic_tokens[k];
+            topic_root += "/";
+            topic_root += topic_tokens[k];
               
-              if (tree_items.count(topic_root) == 0)
+            if (tree_items.count(topic_root) == 0)
+            {
+              QTreeWidgetItem *treeItem = new QTreeWidgetItem(parent);
+              treeItem->setText(0, topic_tokens[k]);
+                
+              if (k == topic_tokens.size() - 1)
               {
-                QTreeWidgetItem *treeItem = new QTreeWidgetItem(ui_->displaylist);
-                treeItem->setText(0, topic_tokens[k]);
-                parent->addChild(treeItem);
+                QBrush brush (Qt::black);
+                treeItem->setForeground(0, QBrush(Qt::black));
+                treeItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
               }
+              else
+              {
+                treeItem->setForeground(0, QBrush(Qt::darkGray));
+                treeItem->setFlags(Qt::ItemIsEnabled);
+              }
+                
+              tree_items[topic_root] = treeItem;
+            }
+            else if (k == topic_tokens.size() - 1)
+            {
+              tree_items[topic_root]->setForeground(0, QBrush(Qt::black));
+              tree_items[topic_root]->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
             }
           }
         }
       }
     }
+    
+    ui_->displaylist->expandAll();
     
     return QDialog::exec();
   }
@@ -102,9 +155,19 @@ namespace mapviz
   {
     QTreeWidgetItem* current_item = ui_->displaylist->currentItem();
     
-    // TODO
+    if (!current_item)
+    {
+      return QString("");
+    }
     
-    return QString("");
+    QString topic = QString("/") + current_item->text(0);
+    while (current_item->parent())
+    {
+      current_item = current_item->parent();
+      topic = QString("/") + current_item->text(0) + topic;
+    }
+    
+    return topic;
   }
 }
 

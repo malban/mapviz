@@ -174,7 +174,9 @@ namespace mapviz_plugins
 
   void ImagePlugin::SelectTopic()
   {
-    mapviz::TopicTreeDialog dialog(config_widget_, QString("sensor_msgs/Image"));
+    QStringList topic_types;
+    topic_types.push_back(QString("sensor_msgs/Image"));
+    mapviz::TopicTreeDialog dialog(config_widget_, topic_types);
     dialog.exec();
 
     if (dialog.result() == QDialog::Accepted && dialog.SelectedCount() == 1)
