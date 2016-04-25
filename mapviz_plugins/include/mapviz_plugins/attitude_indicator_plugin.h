@@ -93,7 +93,6 @@ class AttitudeIndicatorPlugin : public mapviz::MapvizPlugin
 
   void Transform() {}
 
-  virtual void UpdateConfig(std::map<std::string, std::string>& params);
   void LoadConfig(const YAML::Node& node, const std::string& path);
   void SaveConfig(YAML::Emitter& emitter, const std::string& path);
 

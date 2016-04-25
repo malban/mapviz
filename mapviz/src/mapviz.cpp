@@ -864,6 +864,13 @@ bool Mapviz::AddDisplay(
     properties[property.key] = property.value;
   }
 
+  YAML::Node config;
+  if (!swri_yaml_util::LoadMap(properties, config))
+  {
+    ROS_ERROR("Failed to parse properties into YAML.");
+    return false;
+  }
+
   for (auto& display: plugins_)
   {
     MapvizPluginPtr plugin = display.second;
@@ -874,7 +881,7 @@ bool Mapviz::AddDisplay(
     }
     if (plugin->Name() == req.name && plugin->Type() ==req.type)
     {
-      plugin->UpdateConfig(properties);
+      plugin->LoadConfig(config, "");
       plugin->SetVisible(req.visible);
 
       if (req.draw_order > 0)
@@ -902,7 +909,7 @@ bool Mapviz::AddDisplay(
   {
     MapvizPluginPtr plugin = 
       CreateNewDisplay(req.name, req.type, req.visible, false, req.draw_order);
-    plugin->UpdateConfig(properties);
+    plugin->LoadConfig(config, "");
     plugin->DrawIcon();
     resp.success = true;
   }

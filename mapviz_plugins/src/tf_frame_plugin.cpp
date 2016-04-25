@@ -415,74 +415,49 @@ namespace mapviz_plugins
     }
   }
 
-  void TfFramePlugin::UpdateConfig(std::map<std::string, std::string>& params)
+  void TfFramePlugin::LoadConfig(const YAML::Node& node, const std::string& path)
   {
-    if (params.count("frame") > 0)
+    if (node["frame"])
     {
-      ui_.frame->setText(params["frame"].c_str());
+      node["frame"] >> source_frame_;
+      ui_.frame->setText(source_frame_.c_str());
     }
 
-    if (params.count("color") > 0)
+    if (node["color"])
     {
-      ui_.color->setColor(QColor(params["color"].c_str()));
+      std::string color;
+      node["color"] >> color;
+      ui_.color->setColor(QColor(color.c_str()));
     }
 
-    if (params.count("draw_style") > 0)
+    if (node["draw_style"])
     {
-      if (params["draw_style"] == "lines")
+      std::string draw_style;
+      node["draw_style"] >> draw_style;
+
+      if (draw_style == "lines")
       {
         draw_style_ = LINES;
         ui_.drawstyle->setCurrentIndex(0);
       }
-      else if (params["draw_style"] == "points")
+      else if (draw_style == "points")
       {
         draw_style_ = POINTS;
         ui_.drawstyle->setCurrentIndex(1);
       }
     }
 
-    if (params.count("position_tolerance") > 0)
+    if (node["position_tolerance"])
     {
-      ui_.positiontolerance->setValue(boost::lexical_cast<double>(params["position_tolerance"]));
+      node["position_tolerance"] >> position_tolerance_;
+      ui_.positiontolerance->setValue(position_tolerance_);
     }
 
-    if (params.count("buffer_size") > 0)
+    if (node["buffer_size"])
     {
-      ui_.buffersize->setValue(boost::lexical_cast<int>(params["buffer_size"]));
+      node["buffer_size"] >> buffer_size_;
+      ui_.buffersize->setValue(buffer_size_);
     }
-    
-    FrameEdited();
-  }
-
-
-  void TfFramePlugin::LoadConfig(const YAML::Node& node, const std::string& path)
-  {
-    node["frame"] >> source_frame_;
-    ui_.frame->setText(source_frame_.c_str());
-
-    std::string color;
-    node["color"] >> color;
-    ui_.color->setColor(QColor(color.c_str()));
-
-    std::string draw_style;
-    node["draw_style"] >> draw_style;
-
-    if (draw_style == "lines")
-    {
-      draw_style_ = LINES;
-      ui_.drawstyle->setCurrentIndex(0);
-    }
-    else if (draw_style == "points")
-    {
-      draw_style_ = POINTS;
-      ui_.drawstyle->setCurrentIndex(1);
-    }
-
-    node["position_tolerance"] >> position_tolerance_;
-    ui_.positiontolerance->setValue(position_tolerance_);
-
-    node["buffer_size"] >> buffer_size_;
-    ui_.buffersize->setValue(buffer_size_);
 
     FrameEdited();
   }

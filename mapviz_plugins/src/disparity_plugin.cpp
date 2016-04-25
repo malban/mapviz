@@ -466,76 +466,55 @@ namespace mapviz_plugins
     last_height_ = height;
   }
 
-  void DisparityPlugin::UpdateConfig(std::map<std::string, std::string>& params)
+  void DisparityPlugin::LoadConfig(const YAML::Node& node, const std::string& path)
   {
-    if (params.count("topic") > 0)
+    if (node["topic"])
     {
-      ui_.topic->setText(params["topic"].c_str());
+      std::string topic;
+      node["topic"] >> topic;
+      ui_.topic->setText(topic.c_str());
       TopicEdited();
     }
 
-    if (params.count("anchor") > 0)
-    {
-      ui_.anchor->setCurrentIndex(ui_.anchor->findText(params["anchor"].c_str()));
-      SetAnchor(params["anchor"].c_str());
+    if (node["anchor"])
+    {             
+      std::string anchor;
+      node["anchor"] >> anchor;
+      ui_.anchor->setCurrentIndex(ui_.anchor->findText(anchor.c_str()));
+      SetAnchor(anchor.c_str());
     }
 
-    if (params.count("units") > 0)
+    if (node["units"])
     {
-      ui_.units->setCurrentIndex(ui_.units->findText(params["units"].c_str()));
-      SetUnits(params["units"].c_str());
+      std::string units;
+      node["units"] >> units;
+      ui_.units->setCurrentIndex(ui_.units->findText(units.c_str()));
+      SetUnits(units.c_str());
     }
 
-    if (params.count("offset_x") > 0)
+    if (node["offset_x"])
     {
-      ui_.offsetx->setValue(boost::lexical_cast<int>(params["offset_x"]));
+      node["offset_x"] >> offset_x_;
+      ui_.offsetx->setValue(offset_x_);
     }
 
-    if (params.count("offset_y") > 0)
+    if (node["offset_y"])
     {
-      ui_.offsety->setValue(boost::lexical_cast<int>(params["offset_y"]));
+      node["offset_y"] >> offset_y_;
+      ui_.offsety->setValue(offset_y_);
     }
 
-    if (params.count("width") > 0)
+    if (node["width"])
     {
-      ui_.width->setValue(boost::lexical_cast<int>(params["width"]));
+      node["width"] >> width_;
+      ui_.width->setValue(width_);
     }
 
-    if (params.count("height") > 0)
-    {
-      ui_.height->setValue(boost::lexical_cast<int>(params["height"]));
+    if (node["height"])
+    {             
+      node["height"] >> height_;
+      ui_.height->setValue(height_);
     }
-  }
-
-  void DisparityPlugin::LoadConfig(const YAML::Node& node, const std::string& path)
-  {
-    std::string topic;
-    node["topic"] >> topic;
-    ui_.topic->setText(topic.c_str());
-
-    TopicEdited();
-
-    std::string anchor;
-    node["anchor"] >> anchor;
-    ui_.anchor->setCurrentIndex(ui_.anchor->findText(anchor.c_str()));
-    SetAnchor(anchor.c_str());
-
-    std::string units;
-    node["units"] >> units;
-    ui_.units->setCurrentIndex(ui_.units->findText(units.c_str()));
-    SetUnits(units.c_str());
-
-    node["offset_x"] >> offset_x_;
-    ui_.offsetx->setValue(offset_x_);
-
-    node["offset_y"] >> offset_y_;
-    ui_.offsety->setValue(offset_y_);
-
-    node["width"] >> width_;
-    ui_.width->setValue(width_);
-
-    node["height"] >> height_;
-    ui_.height->setValue(height_);
   }
 
   void DisparityPlugin::SaveConfig(YAML::Emitter& emitter, const std::string& path)

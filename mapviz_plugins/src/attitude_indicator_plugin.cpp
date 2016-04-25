@@ -411,79 +411,45 @@ void AttitudeIndicatorPlugin::drawPanel()
   glEnd();
 }
 
-void AttitudeIndicatorPlugin::UpdateConfig(std::map<std::string, std::string>& params)
+void AttitudeIndicatorPlugin::LoadConfig(const YAML::Node& node, const std::string& path)
 {
-  if (params.count("topic") > 0)
+  if (node["topic"])
   {
-    ui_.topic->setText(params["topic"].c_str());
+    std::string topic;
+    node["topic"] >> topic;
+    ui_.topic->setText(topic.c_str());
   }
-
+  
   QRect current = placer_.rect();
   int x = current.x();
   int y = current.y();
   int width = current.width();
   int height = current.height();
 
-  if (params.count("x") > 0)
+  if (swri_yaml_util::FindValue(node, "x"))
   {
-    x = boost::lexical_cast<int>(params["x"]);
+    node["x"] >> x;
   }
 
-  if (params.count("y") > 0)
+  if (swri_yaml_util::FindValue(node, "y"))
   {
-    y = boost::lexical_cast<int>(params["y"]);
+    node["y"] >> y;
+  }
+  
+  if (swri_yaml_util::FindValue(node, "width"))
+  {
+    node["width"] >> width;
   }
 
-  if (params.count("width") > 0)
+  if (swri_yaml_util::FindValue(node, "height"))
   {
-    width = boost::lexical_cast<int>(params["width"]);
+    node["height"] >> height;
   }
 
-  if (params.count("height") > 0)
-  {
-    height = boost::lexical_cast<int>(params["height"]);
-  }
-
-  placer_.setRect(QRect(x, y, width, height));
-
+  QRect position(x, y, width, height);
+  placer_.setRect(position);
+  
   TopicEdited();
-}
-
-void AttitudeIndicatorPlugin::LoadConfig(const YAML::Node& node, const std::string& path)
-{ 
-   std::string topic;
-   node["topic"] >> topic;
-   ui_.topic->setText(topic.c_str());
-
-   int x = 0;
-   int y = 0;
-   int width = 100;
-   int height = 100;
-
-   if (swri_yaml_util::FindValue(node, "x"))
-   {
-     node["x"] >> x;
-   }
-
-   if (swri_yaml_util::FindValue(node, "y"))
-   {
-     node["y"] >> y;
-   }
-
-   if (swri_yaml_util::FindValue(node, "width"))
-   {
-     node["width"] >> width;
-   }
-
-   if (swri_yaml_util::FindValue(node, "height"))
-   {
-     node["height"] >> height;
-   }
-
-   QRect position(x, y, width, height);
-   placer_.setRect(position);
-
-   TopicEdited();
 }
 
 void AttitudeIndicatorPlugin::SaveConfig(YAML::Emitter& emitter, const std::string& path)

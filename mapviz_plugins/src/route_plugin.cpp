@@ -480,48 +480,8 @@ namespace mapviz_plugins
     glEnd();
   }
 
-  void RoutePlugin::UpdateConfig(std::map<std::string, std::string>& params)
-  {
-    if (params.count("topic") > 0)
-    {
-      ui_.topic->setText(boost::trim_copy(params["topic"]).c_str());
-    }
-    
-    if (params.count("color") > 0)
-    {
-      ui_.color->setColor(QColor(params["color"].c_str()));
-    }
-
-    if (params.count("postopic") > 0)
-    {
-      ui_.positiontopic->setText(boost::trim_copy(params["postopic"]).c_str());
-    }
-
-    if (params.count("poscolor") > 0)
-    {
-      ui_.positioncolor->setColor(QColor(params["poscolor"].c_str()));
-    }
-
-    if (params.count("draw_style") > 0)
-    {
-      if (params["draw_style"] == "lines")
-      {
-        draw_style_ = LINES;
-        ui_.drawstyle->setCurrentIndex(0);
-      }
-      else if (params["draw_style"] == "points")
-      {
-        draw_style_ = POINTS;
-        ui_.drawstyle->setCurrentIndex(1);
-      }
-    }
-
-    TopicEdited();
-    PositionTopicEdited();
-  }
-
   void RoutePlugin::LoadConfig(const YAML::Node& node, const std::string& path)
-  {
+  {    
     if (node["topic"])
     {
       std::string route_topic;
@@ -546,18 +506,22 @@ namespace mapviz_plugins
       node["poscolor"] >> poscolor;
       ui_.positioncolor->setColor(QColor(poscolor.c_str()));
     }
-    std::string draw_style;
-    node["draw_style"] >> draw_style;
 
-    if (draw_style == "lines")
+    if (node["draw_style"])
     {
-      draw_style_ = LINES;
-      ui_.drawstyle->setCurrentIndex(0);
-    }
-    else if (draw_style == "points")
-    {
-      draw_style_ = POINTS;
-      ui_.drawstyle->setCurrentIndex(1);
+      std::string draw_style;
+      node["draw_style"] >> draw_style;
+
+      if (draw_style == "lines")
+      {
+        draw_style_ = LINES;
+        ui_.drawstyle->setCurrentIndex(0);
+      }
+      else if (draw_style == "points")
+      {
+        draw_style_ = POINTS;
+        ui_.drawstyle->setCurrentIndex(1);
+      }
     }
 
     TopicEdited();

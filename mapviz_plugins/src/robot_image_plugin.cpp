@@ -297,46 +297,31 @@ namespace mapviz_plugins
     }
   }
 
-  void RobotImagePlugin::UpdateConfig(std::map<std::string, std::string>& params)
-  {
-    if (params.count("frame") > 0)
-    {
-      ui_.frame->setText(QString::fromStdString(params["frame"]));
-    }
-
-    if (params.count("image") > 0)
-    {
-      ui_.image->setText(QString::fromStdString(params["image"]));
-    }
-
-    if (params.count("width") > 0)
-    {
-      ui_.width->setValue(boost::lexical_cast<double>(params["width"]));
-    }
-
-    if (params.count("height") > 0)
-    {
-      ui_.height->setValue(boost::lexical_cast<double>(params["height"]));
-    }
-
-    UpdateShape();
-    LoadImage();
-    FrameEdited();
-  }
-
   void RobotImagePlugin::LoadConfig(const YAML::Node& node, const std::string& path)
   {
-    node["frame"] >> source_frame_;
-    ui_.frame->setText(source_frame_.c_str());
+    if (node["frame"])
+    {
+      node["frame"] >> source_frame_;
+      ui_.frame->setText(source_frame_.c_str());
+    }
 
-    node["image"] >> filename_;
-    ui_.image->setText(filename_.c_str());
+    if (node["image"])
+    {
+      node["image"] >> filename_;
+      ui_.image->setText(filename_.c_str());
+    }
 
-    node["width"] >> width_;
-    ui_.width->setValue(width_);
+    if (node["width"])
+    {
+      node["width"] >> width_;
+      ui_.width->setValue(width_);
+    }
 
-    node["height"] >> height_;
-    ui_.height->setValue(height_);
+    if (node["height"])
+    {
+      node["height"] >> height_;
+      ui_.height->setValue(height_);
+    }
 
     UpdateShape();
     LoadImage();

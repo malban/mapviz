@@ -336,33 +336,57 @@ namespace mapviz_plugins
 
   void GridPlugin::LoadConfig(const YAML::Node& node, const std::string& path)
   {
-    std::string color;
-    node["color"] >> color;
-    ui_.color->setColor(QColor(color.c_str()));
+    if (node["color"])
+    {            
+      std::string color;
+      node["color"] >> color;
+      ui_.color->setColor(QColor(color.c_str()));
+    }
 
-    std::string frame;
-    node["frame"] >> frame;
-    ui_.frame->setText(QString::fromStdString(frame));
+    if (node["frame"])
+    {
+      std::string frame;
+      node["frame"] >> frame;
+      ui_.frame->setText(QString::fromStdString(frame));
+    }
 
-    float x = 0;
-    float y = 0;
-    node["x"] >> x;
-    node["y"] >> y;
+    if (node["x"])
+    {
+      float x = 0;
+      node["x"] >> x;
+      ui_.x->setValue(x);
+    }
 
-    ui_.x->setValue(x);
-    ui_.y->setValue(y);
+    if (node["y"])
+    {
+      float y = 0;
+      node["y"] >> y;
+      ui_.y->setValue(y);
+    }
 
-    node["alpha"] >> alpha_;
-    ui_.alpha->setValue(alpha_);
+    if (node["alpha"])
+    {
+      node["alpha"] >> alpha_;
+      ui_.alpha->setValue(alpha_);
+    }
 
-    node["size"] >> size_;
-    ui_.size->setValue(size_);
+    if (node["size"])
+    {
+      node["size"] >> size_;
+      ui_.size->setValue(size_);
+    }
 
-    node["rows"] >> rows_;
-    ui_.rows->setValue(rows_);
+    if (node["rows"])
+    {
+      node["rows"] >> rows_;
+      ui_.rows->setValue(rows_);
+    }
 
-    node["columns"] >> columns_;
-    ui_.columns->setValue(columns_);
+    if (node["columns"])
+    {
+      node["columns"] >> columns_;
+      ui_.columns->setValue(columns_);
+    }
 
     FrameEdited();
   }
@@ -381,52 +405,6 @@ namespace mapviz_plugins
     emitter << YAML::Key << "size" << YAML::Value << size_;
     emitter << YAML::Key << "rows" << YAML::Value << rows_;
     emitter << YAML::Key << "columns" << YAML::Value << columns_;
-  }
-  
-  void GridPlugin::UpdateConfig(std::map<std::string, std::string>& params)
-  {
-    if (params.count("color") > 0)
-    {
-      ui_.color->setColor(QColor(params["color"].c_str()));
-    }
-
-    if (params.count("alpha") > 0)
-    {
-      ui_.alpha->setValue(boost::lexical_cast<double>(params["alpha"]));
-    }
-
-    if (params.count("frame") > 0)
-    {
-      ui_.frame->setText(QString::fromStdString(params["frame"]));
-    }
-
-    if (params.count("x") > 0)
-    {
-      ui_.x->setValue(boost::lexical_cast<double>(params["x"]));
-    }
-
-    if (params.count("y") > 0)
-    {
-      ui_.y->setValue(boost::lexical_cast<double>(params["y"]));
-    }
-
-    if (params.count("size") > 0)
-    {
-      ui_.size->setValue(boost::lexical_cast<double>(params["size"]));
-    }
-
-    if (params.count("rows") > 0)
-    {
-      ui_.rows->setValue(boost::lexical_cast<int>(params["rows"]));
-    }
-
-    if (params.count("columns") > 0)
-    {
-      ui_.columns->setValue(boost::lexical_cast<int>(params["columns"]));
-    }
-
-
-    FrameEdited();
   }
 }
 
